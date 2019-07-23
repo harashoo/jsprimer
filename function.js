@@ -129,10 +129,10 @@
 
 // console.log(obj.method());
 
-const obj = {
-  method() {
-    return "this is method";
-  }
-};
+// const obj = {
+//   method() {
+//     return "this is method";
+//   }
+// };
 
-console.log(obj.method());
+// console.log(obj.method());
