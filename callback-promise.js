@@ -13,20 +13,56 @@
 // blockTime(6000); // 他の処理を1000ミリ秒（1秒間）ブロックする
 // console.log("この行が呼ばれるまで処理が1秒間ブロックされる");
 
-function blockTime(timeout) {
-  const startTime = Date.now();
-  while(true) {
-    const diffTime = Date.now() - startTime;
-    if (diffTime >= timeout) {
-      return;
-    }
-  }
-}
+// function blockTime(timeout) {
+//   const startTime = Date.now();
+//   while(true) {
+//     const diffTime = Date.now() - startTime;
+//     if (diffTime >= timeout) {
+//       return;
+//     }
+//   }
+// }
 
-console.log("1. setTimeoutのコールバック関数を10ミリ秒後に実行します");
-setTimeout(() => {
-  console.log("3. ブロックする処理を開始します");
-  blockTime(1000);
-  console.log("4. ブロックする処理が完了しました");
-}, 10);
-console.log("2. 同期的な処理を実行します");
+// console.log("1. setTimeoutのコールバック関数を10ミリ秒後に実行します");
+// setTimeout(() => {
+//   console.log("3. ブロックする処理を開始します");
+//   blockTime(1000);
+//   console.log("4. ブロックする処理が完了しました");
+// }, 10);
+// console.log("2. 同期的な処理を実行します");
+
+// function dummyFetch(path, callback) {
+//   setTimeout(() => {
+//     if (path.startsWith("/success")) {
+//       callback(null, { body: `Resonse body of ${path}`});
+//     } else {
+//       callback(new Error("NOT FOUND"));
+//     }
+//   }, 1000 * Math.random());
+// }
+
+// dummyFetch("/success/data", (error, response) => {
+//   if (error) {
+
+//   } else {
+//     console.log(response);
+//   }
+// })
+
+// dummyFetch("/failure/data", (error, response) => {
+//   if (error) {
+//     console.log(error.message);
+//   } else {
+
+//   }
+// });
+
+function dummyFetch(path, successCallback, failureCallback) {
+  setTimeout(() => {
+    if (path.startsWith("/success")) {
+      successCallback({ body: `Response body of ${path}` });
+    } else {
+      failureCallback(new Error("NOT FOUND"));
+    }
+  }, 1000 * Math.random());
+}
