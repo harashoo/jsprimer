@@ -57,12 +57,34 @@
 //   }
 // });
 
-function dummyFetch(path, successCallback, failureCallback) {
-  setTimeout(() => {
-    if (path.startsWith("/success")) {
-      successCallback({ body: `Response body of ${path}` });
-    } else {
-      failureCallback(new Error("NOT FOUND"));
-    }
-  }, 1000 * Math.random());
+// function dummyFetch(path, successCallback, failureCallback) {
+//   setTimeout(() => {
+//     if (path.startsWith("/success")) {
+//       successCallback({ body: `Response body of ${path}` });
+//     } else {
+//       failureCallback(new Error("NOT FOUND"));
+//     }
+//   }, 1000 * Math.random());
+// }
+
+function dummyFetch(path) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (path.startsWith("/resource")) {
+        resolve({ body: `Response body of ${path}` });
+      } else {
+        reject(new Error("NOT FOUND"));
+      }
+    }, 1000 * Math.random());
+  });
 }
+
+let isLoading = true;
+dummyFetch("/resource/A").then(response => {
+  console.log(response);
+}).catch(error => {
+  console.log(error);
+}).finally(() => {
+  isLoading = false;
+  console.log("Promise#finally");
+});
