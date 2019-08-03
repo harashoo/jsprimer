@@ -139,13 +139,68 @@
 //   console.log(value);
 // });
 
-function timeout(timeoutMs) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(new Error(`Timeout: ${timeoutMs}ミリ秒経過`));
-    }, timeoutMs);
-  });
-}
+// function timeout(timeoutMs) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       reject(new Error(`Timeout: ${timeoutMs}ミリ秒経過`));
+//     }, timeoutMs);
+//   });
+// }
+
+// function dummyFetch(path) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       if (path.startsWith("/resource")) {
+//         resolve({ body: `Response body of ${path}` });
+//       } else {
+//         reject(new Error("NOT FOUND"));
+//       }
+//     }, 1000 * Math.random());
+//   });
+// }
+
+// Promise.race([
+//   dummyFetch("/resource/data"),
+//   timeout(500),
+// ]).then(response => {
+//   console.log(response.body);
+// }).catch(error => {
+//   console.log(error.message);
+// });
+
+// async function asyncMain() {
+//   try {
+//     const value = await Promise.reject(new Error("エラーメッセージ"));
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+// asyncMain()
+
+// function dummyFetch(path) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       if (path.startsWith("/resource")) {
+//         resolve({ body: `Response body of ${path}` });
+//       } else {
+//         reject(new Error("NOT FOUND"));
+//       }
+//     }, 1000 * Math.random());
+//   });
+// }
+
+// async function fetchAB() {
+//   const results = [];
+//   const responseA = await dummyFetch("/resource/A");
+//   results.push(responseA.body);
+//   const responseB = await dummyFetch("/resource/B");
+//   results.push(responseB.body);
+//   return results;
+// }
+
+// fetchAB().then((results) => {
+//   console.log(results);
+// });
 
 function dummyFetch(path) {
   return new Promise((resolve, reject) => {
@@ -159,11 +214,42 @@ function dummyFetch(path) {
   });
 }
 
-Promise.race([
-  dummyFetch("/resource/data"),
-  timeout(500),
-]).then(response => {
-  console.log(response.body);
-}).catch(error => {
-  console.log(error.message);
+// async function fetchResources(resources) {
+//   const results = [];
+//   for (let i = 0; i < resources.length; i++) {
+//     const resource = resources[i];
+//     const response = await dummyFetch(resource);
+//     results.push(response.body);
+//   }
+
+//   return results;
+// }
+
+// const resources = [
+//   "/resource/A",
+//   "/resource/B"
+// ];
+
+// fetchResources(resources).then((results) => {
+//   console.log(results);
+// });
+
+async function fetchAllResources(resources) {
+  const promises = resources.map(function(resource) {
+    return dummyFetch(resource);
+  });
+
+  const responses = await Promise.all(promises);
+
+  return responses.map((response) => {
+    return response.body;
+  });
+}
+const resources = [
+  "/resource/A",
+  "/resource/B"
+];
+
+fetchAllResources(resources).then((results) => {
+  console.log(results);
 });
