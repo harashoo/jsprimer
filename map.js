@@ -23,3 +23,65 @@
   console.log(results);
 }
 
+{
+  function sendPOSTRequest(url, data) {
+    const httpRequest = new XMLHttpRequest();
+    httpRequest.setRequestHeader("Content-Type", "application/json");
+    httpRequest.send(JSON.stringify(data));
+    httpRequest.open("POST", url);
+  }
+
+  function onLoginFormSubmit(event) {
+    const form = event.target;
+    const data = {
+      userName: form.elements.userName,
+      password: form.elements.password,
+    };
+    sendPOSTRequest("/api/login", data);
+  }
+}
+
+{
+  const listenersMap = new WeakMap();
+
+  class EventEmitter {
+    addListener(listener) {
+      const listeners = listenersMap.get(this) || [];
+      const newListeners = listeners.concat(listener);
+      listenersMap.set(this, newListeners);
+    }
+  }
+  
+  let eventEmitter = new EventEmitter();
+
+  eventEmitter.addListener(() => {
+    console.log("イベントが発火しました");
+  });
+  eventEmitter = null;
+}
+
+{
+  const set = new Set();
+  set.add("a");
+  console.log(set.size);
+  set.add("a");
+  console.log(set.size);
+  console.log(set.has("a"));
+  console.log(set.has("b"));
+  set.add("b");
+  set.delete("a");
+  console.log(set.size);
+  set.clear();
+  console.log(set.size);
+}
+
+{
+  const set = new Set();
+  set.add("a");
+  set.add("b");
+  const results = [];
+  for (const value of set) {
+    results.push(value);
+  }
+  console.log(results);
+}
