@@ -1,32 +1,48 @@
-console.log("index.js: loaded");
+async function main() {
+  try {
+    const userId = getUserId();
+    const userInfo = await fetchUserInfo(userId);
+    const view = createView(userInfo);
+    displayView(view);
+  } catch(error) {
+    onsole.error(`エラーが発生しました (${error})`);
+  }
+}
 
 function fetchUserInfo(userId) {
-  fetch(`https://api.github.com/users/${userId}`)
+  return fetch(`https://api.github.com/users/${userId}`)
     .then(response => {
-      console.log(response.status);
       if (!response.ok) {
-        console.error("サーバーエラー", response);
+        throw new Error(`${response.status}: ${response.statusText}`);
       } else {
-        response.json().then(userInfo => {
-          console.log(userInfo);
-          const view = escapeHTML`
-          <h4>${userInfo.name} (@${userInfo.login})</h4>
-          <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
-          <dl>
-            <dt>Location</dt>
-            <dd>${userInfo.location}</dd>
-            <dt>Repositories</dt>
-            <dd>${userInfo.public_repos}</dd>
-          </dl>
-          `;
-
-          const result = document.getElementById("result");
-          result.innerHTML = view;
-        });
+        return response.json();
       }
     }).catch(error => {
-      console.error("ネットワークエラー", error);
+      throw new Error("ネットワークエラー");
     });
+}
+
+function getUserId() {
+  const value = document.getElementById("userId").value;
+  return encodeURIComponent(value);
+}
+
+function createView(userInfo) {
+  return escapeHTML`
+  <h4>${userInfo.name} (@${userInfo.login})</h4>
+  <img src="${userInfo.avatar_url}" alt="${userInfo.login}" height="100">
+  <dl>
+    <dt>Location</dt>
+    <dd>${userInfo.location}</dd>
+    <dt>Repositories</dt>
+    <dd>${userInfo.public_repos}</dd>
+  </dl>
+  `;
+}
+
+function displayView(view) {
+  const result = document.getElementById("result");
+  result.innerHTML = view;
 }
 
 function escapeSpecialChars(str) {
